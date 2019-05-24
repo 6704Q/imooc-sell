@@ -1,16 +1,21 @@
 package com.imooc.service.impl;
 
 import com.imooc.dao.ProductInfoDao;
+import com.imooc.dto.CartDTO;
 import com.imooc.entity.ProductCategory;
 import com.imooc.entity.ProductInfo;
 import com.imooc.enums.ProductStatusEnum;
+import com.imooc.enums.ResultEnum;
+import com.imooc.exception.SellException;
 import com.imooc.service.ProductCategoryService;
 import com.imooc.service.ProductInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -54,5 +59,44 @@ public class ProductInfoServiceImpl implements ProductInfoService {
     @Override
     public ProductInfo save(ProductInfo productInfo) {
         return productInfoDao.save(productInfo);
+    }
+
+    /**
+     * 加库存
+     * @param cartDTOList
+     */
+    @Override
+    @Transactional
+    public void addStock(List<CartDTO> cartDTOList) {
+        for (CartDTO cartDTO : cartDTOList){
+            ProductInfo productInfo = productInfoDao.findOne(cartDTO.getProductId());
+            if (productInfo == null){
+                throw new SellException(ResultEnum.PRODUCT_NOT_EXIST);
+            }
+            Integer num = cartDTO.getProductStock() + productInfo.getProductStock();
+            productInfo.setProductStock(num);
+            productInfoDao.save(productInfo);
+        }
+    }
+
+    /**
+     * @param cartDTOList
+     * 减商品库存
+     */
+    @Override
+    @Transactional
+    public void decreaseStock(List<CartDTO> cartDTOList) {
+        for(CartDTO cartDTO : cartDTOList){
+            ProductInfo productInfo = productInfoDao.findOne(cartDTO.getProductId());
+            if(productInfo == null){
+                throw new SellException(ResultEnum.PRODUCT_NOT_EXIST);
+            }
+            Integer result = productInfo.getProductStock() - cartDTO.getProductStock();
+            if (result < 0){
+                throw new SellException(ResultEnum.PRODUCT_STOCK_ERROR);
+            }
+            productInfo.setProductStock(result);
+            productInfoDao.save(productInfo);
+        }
     }
 }

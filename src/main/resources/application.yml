@@ -1,10 +1,15 @@
 spring:
+  #数据库配置
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     username: root
     password: 123456
     url: jdbc:mysql://192.168.16.76:3306/sell?characterEncoding=utf-8&useSSL=false
+  #显示SQL
   jpa:
     show-sql: true
+  #为空的列前端不反回
+  jackson:
+    default-property-inclusion: non_null
 server:
   context-path: /sell
