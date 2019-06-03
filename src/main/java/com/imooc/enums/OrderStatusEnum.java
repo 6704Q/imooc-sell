@@ -10,7 +10,7 @@ import lombok.Getter;
  * Desc
  */
 @Getter
-public enum OrderStatusEnum {
+public enum OrderStatusEnum implements CodeEnum{
     NEW(0,"新订单"),
     END(1,"完结"),
     CANCEL(2,"取消")

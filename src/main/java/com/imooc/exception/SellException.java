@@ -1,6 +1,7 @@
 package com.imooc.exception;
 
 import com.imooc.enums.ResultEnum;
+import lombok.Getter;
 
 /**
  * Created with IDEA
@@ -9,6 +10,7 @@ import com.imooc.enums.ResultEnum;
  * Time:9:41
  * Desc 异常处理类
  */
+@Getter
 public class SellException extends RuntimeException{
 
     private Integer code;

@@ -39,7 +39,6 @@ public class OrderServiceImplTest {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.setBuyerOpenid("19901123");
         orderDTO.setBuyerAddress("浙江杭州滨江区缤纷北苑23幢2单元503");
-        orderDTO.setBuyerName("舞飘剑");
         orderDTO.setBuyerPhone("1383546987");
         orderDTO.setOrderAmount(new BigDecimal(699));
         List<OrderDetail> orderDetailList = new ArrayList<>();
@@ -48,19 +47,13 @@ public class OrderServiceImplTest {
         orderDetail.setProductQuantity(1);
         orderDetailList.add(orderDetail);
 
-        OrderDetail orderDetai2 = new OrderDetail();
-        orderDetai2.setProductId("10012");
-        orderDetai2.setProductQuantity(2);
-        orderDetailList.add(orderDetai2);
-
-        OrderDetail orderDetai3 = new OrderDetail();
-        orderDetai3.setProductId("10015");
-        orderDetai3.setProductQuantity(3);
-        orderDetailList.add(orderDetai3);
-
         orderDTO.setOrderDetailList(orderDetailList);
-        OrderDTO result = orderService.create(orderDTO);
-        log.info("【创建订单】result = {}",result);
+        for (int i =0;i < 1000;i++){
+            orderDTO.setBuyerName("舞飘剑"+i);
+            OrderDTO result = orderService.create(orderDTO);
+            log.info("i = {}",i);
+        }
+
     }
 
     @Test
@@ -71,7 +64,7 @@ public class OrderServiceImplTest {
 
     @Test
     public void findList() {
-        Page<OrderDTO> orderDTOS = orderService.findList("19901123",new PageRequest(0,5));
+        Page<OrderDTO> orderDTOS = orderService.findList("oTgZpwVg5gRS2pbOkV4ARcSD57Vw",new PageRequest(0,5));
         log.info("【订单列表】result = {}",orderDTOS);
     }
 
@@ -95,4 +88,11 @@ public class OrderServiceImplTest {
         OrderDTO orderDTO = orderService.pay(result);
         log.info("【订单支付完成】result = {}",orderDTO);
     }
+
+    @Test
+    public void List() {
+        Page<OrderDTO> orderDTOS = orderService.findList(new PageRequest(0,20));
+        log.info("【订单列表】result = {}",orderDTOS);
+    }
+
 }

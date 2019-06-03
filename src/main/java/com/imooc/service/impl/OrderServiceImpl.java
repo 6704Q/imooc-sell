@@ -12,7 +12,9 @@ import com.imooc.enums.OrderStatusEnum;
 import com.imooc.enums.PayStatusEnum;
 import com.imooc.enums.ResultEnum;
 import com.imooc.exception.SellException;
+import com.imooc.message.WebSocket;
 import com.imooc.service.OrderServicer;
+import com.imooc.service.PayService;
 import com.imooc.service.ProductInfoService;
 import com.imooc.utils.KeyUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +51,12 @@ public class OrderServiceImpl implements OrderServicer {
     @Autowired
     private OrderMasterDao orderMasterDao;
 
+    @Autowired
+    private PayService payService;
+
+    @Autowired
+    private WebSocket webSocket;
+
     @Override
     @Transactional
     public OrderDTO create(OrderDTO orderDTO) {
@@ -82,6 +90,8 @@ public class OrderServiceImpl implements OrderServicer {
                 new CartDTO(e.getProductId(),e.getProductQuantity())
                 ).collect(Collectors.toList());
         productInfoService.decreaseStock(cartDTOList);
+        //5.推送消息
+        webSocket.sendMessage(orderDTO.getOrderId());
         return orderDTO;
     }
 
@@ -100,8 +110,8 @@ public class OrderServiceImpl implements OrderServicer {
     @Override
     public Page<OrderDTO> findList(String byuerOpenid, Pageable pageable) {
         Page<OrderMaster> orderMasterList = orderMasterDao.findByBuyerOpenid(byuerOpenid,pageable);
-        Page<OrderDTO> orderDTOS = new PageImpl<OrderDTO>(OrdermasterToOrderDTO.convert(orderMasterList.getContent()));
-        return orderDTOS;
+        List<OrderDTO> orderDTOS =OrdermasterToOrderDTO.convert(orderMasterList.getContent());
+        return new PageImpl<>(orderDTOS,pageable,orderMasterList.getTotalElements());
     }
 
     @Override
@@ -128,7 +138,7 @@ public class OrderServiceImpl implements OrderServicer {
         productInfoService.addStock(cartDTOList);
         //退款
         if (orderDTO.getPayStatus().equals(PayStatusEnum.SUCCESS.getCode())){
-        //TODO
+            payService.refund(orderDTO);
         }
         return orderDTO;
     }
@@ -163,7 +173,7 @@ public class OrderServiceImpl implements OrderServicer {
     public OrderDTO pay(OrderDTO orderDTO) {
         //判断订单状态
         if (!orderDTO.getOrderStatus().equals(OrderStatusEnum.NEW.getCode())){
-            log.error("【订单支付完成】 订单状态不争取 result = {}",orderDTO.getOrderStatus());
+            log.error("【订单支付完成】 订单状态不正确 result = {}",orderDTO.getOrderStatus());
             throw new SellException(ResultEnum.ORDER_STATUS_ERROR);
         }
         //判断支付状态
@@ -181,5 +191,17 @@ public class OrderServiceImpl implements OrderServicer {
             throw new SellException(ResultEnum.ORDER_UPDATE_ERROR);
         }
         return orderDTO;
+    }
+
+    /**
+     * 获取所有用户订单
+     * @param pageable
+     * @return
+     */
+    @Override
+    public Page<OrderDTO> findList(Pageable pageable) {
+        Page<OrderMaster> orderMaster = orderMasterDao.findAll(pageable);
+        List<OrderDTO> orderDTOS = OrdermasterToOrderDTO.convert(orderMaster.getContent());
+        return new PageImpl<OrderDTO>(orderDTOS,pageable,orderMaster.getTotalElements());
     }
 }

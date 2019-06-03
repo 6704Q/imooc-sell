@@ -1,6 +1,8 @@
 package com.imooc.service.impl;
 
 import com.imooc.entity.ProductInfo;
+import com.imooc.enums.ProductStatusEnum;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +26,7 @@ import static org.junit.Assert.*;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@Slf4j
 public class ProductInfoServiceImplTest {
 
     @Autowired
@@ -67,6 +70,22 @@ public class ProductInfoServiceImplTest {
         productInfo.setProductStock(100);
         ProductInfo result = productInfoService.save(productInfo);
         Assert.assertNotNull(result);
-
     }
+
+    @Test
+    public void onSale(){
+        ProductInfo productInfo = productInfoService.onSale("10011");
+    }
+
+    @Test
+    public void offSale(){
+        ProductInfo productInfo = productInfoService.offSale("10011");
+    }
+
+    @Test
+    public void demo(){
+        int num = productInfoService.updateProductCategory(2,3);
+        log.info("修改数量{}",num);
+    }
+
 }

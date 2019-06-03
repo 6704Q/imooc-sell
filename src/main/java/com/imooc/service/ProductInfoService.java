@@ -38,4 +38,12 @@ public interface ProductInfoService {
     //扣库存
     void decreaseStock(List<CartDTO> cartDTOList);
 
+    //上架
+    ProductInfo onSale(String productId);
+
+    //下架
+    ProductInfo offSale(String productId);
+
+    //修改商品类目
+    int updateProductCategory(Integer oldCategory,Integer newCategory);
 }

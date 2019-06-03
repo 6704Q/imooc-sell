@@ -11,5 +11,36 @@ spring:
   #为空的列前端不反回
   jackson:
     default-property-inclusion: non_null
+  redis:
+    host: 192.168.16.76
+    port: 6379
 server:
   context-path: /sell
+
+#微信配置
+wechat:
+  #公众平台
+  mpAppId: wxd898fcb01713c658
+  mpAppSecret: c293155800ac9b2fc50e1b820bf52617
+  mchId: 1483469312
+  mchKey: C5245D70627C1F8E9964D494B0735025
+  keyPath: F:\ProjectTest/h5.p12
+  notifyUrl: http://cszjy.natapp1.cc/sell/pay/notify
+  #开放平台
+  openAppId: wx6ad144e54af67d87
+  openAppSecret: 91a2ff6d38a2bbccfb7e9f9079108e2e
+
+#项目路径
+projectUrl:
+  wechatMpAuthorize: http://cszjy.natapp1.cc
+  wechatOpenAuthorize: http://cszjy.natapp1.cc
+  sell: http://cszjy.natapp1.cc
+
+#日志级别 打印SQL
+logging:
+  level:
+    com.imooc.entity.mapper: trace
+
+#引入*mapper,xml文件
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
