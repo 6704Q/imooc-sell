@@ -22,7 +22,7 @@
             <onMismatch>ACCEPT</onMismatch>
         </filter>
         <encoder>
-         <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符--> 
+         <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
             <pattern>
                  %d - %msg%n
             </pattern>
@@ -40,7 +40,7 @@
             <level>ERROR</level>
         </filter>
         <encoder>
-         <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符--> 
+         <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
             <pattern>
                 %msg%n
             </pattern>
@@ -63,11 +63,11 @@
         <appender-ref ref="fileErrorLog" />
     </root>
 
-<!--日志异步到数据库 -->  
+<!--日志异步到数据库 -->
     <!-- <appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
-        日志异步到数据库 
+        日志异步到数据库
         <connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
-           连接池 
+           连接池
            <dataSource class="com.mchange.v2.c3p0.ComboPooledDataSource">
               <driverClass>com.mysql.jdbc.Driver</driverClass>
               <url>jdbc:mysql://127.0.0.1:3306/databaseName</url>
